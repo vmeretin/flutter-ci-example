@@ -1,0 +1,7 @@
+include:
+  - local: .gitlab/default.yml
+
+stages:
+  - prepare
+  - publish
+  - push

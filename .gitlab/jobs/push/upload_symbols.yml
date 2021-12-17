@@ -1,0 +1,7 @@
+upload_symbols:
+  stage: push
+  dependencies:
+    - build_ipa
+  allow_failure: true
+  script:
+    - $IOS_UPLOAD_SYMBOLS_PATH -gsp ios/Runner/GoogleService-Info.plist -p ios $IOS_DSYM_PATH

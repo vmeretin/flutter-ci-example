@@ -1,0 +1,71 @@
+default_platform(:android)
+
+def map_google_play_track()
+  case ENV["BUILD_TYPE"]
+  when "test"
+    return "internal"
+  when "beta"
+    return "beta"
+  when "release"
+    return "production"
+  end
+end
+
+before_all do
+  ENV["SLACK_URL"] = ENV["ANDROID_SLACK_URL"]
+end
+
+desc "Submit a new build to Firebase App Distribution"
+lane :publish_to_firebase do
+  firebase_app_distribution(
+    android_artifact_type: "APK",
+    android_artifact_path: "../#{ENV["ANDROID_APK_PATH"]}",
+    app: ENV["ANDROID_FIREBASE_APP_ID"],
+    groups: "internalTesters",
+    release_notes: "Git Branch: #{ENV["CI_COMMIT_REF_NAME"]} \nGit Commit: #{ENV["CI_COMMIT_MESSAGE"]}"
+  )
+  slack(
+    message: ":rocket: Firebase App Distribution: #{ENV["VERSION"]}",
+    success: true
+  )
+end
+
+desc "Submit a new build to Google Play"
+lane :publish_to_google_play do
+  upload_to_play_store(
+    aab: "../#{ENV["ANDROID_AAB_PATH"]}",
+    track: map_google_play_track,
+    release_status: 'draft',
+    skip_upload_metadata: true,
+    skip_upload_changelogs: true,
+    skip_upload_images: true,
+    skip_upload_screenshots: true,
+  )
+  slack(
+    message: ":rocket: Google Play #{map_google_play_track}: #{ENV["VERSION"]}",
+    success: true
+  )
+end
+
+desc "Submit a new build to Huawei AppGallery Connect"
+lane :publish_to_huawei_appgallery do
+  huawei_appgallery_connect(
+    app_id: ENV["HUAWEI_APP_ID"],
+    client_id: ENV["HUAWEI_CLIENT_ID"],
+    client_secret: ENV["HUAWEI_CLIENT_SECRET"],
+    apk_path: "../#{ENV["ANDROID_APK_PATH"]}",
+    is_aab: false,
+    submit_for_review: false,
+  )
+  slack(
+    message: ":rocket: Huawei AppGallery Connect: #{ENV["VERSION"]}",
+    success: true
+  )
+end
+
+error do |lane, exception|
+  slack(
+    message: exception.message,
+    success: false
+  )
+end

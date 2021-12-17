@@ -1,0 +1,7 @@
+default:
+  before_script:
+    - set -e
+    - eval "$(rbenv init -)"
+    - source ~/.zshrc
+  tags:
+    - mac_mini

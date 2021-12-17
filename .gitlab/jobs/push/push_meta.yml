@@ -1,0 +1,11 @@
+push_meta:
+  stage: push
+  dependencies:
+    - fetch_version_code
+  script:
+    - git clone --depth=1 $META_GIT_URL
+    - cd meta-mobile
+    - echo $VERSION_CODE >version_code.txt
+    - git add version_code.txt
+    - git commit -m "Version bumped"
+    - git push origin master

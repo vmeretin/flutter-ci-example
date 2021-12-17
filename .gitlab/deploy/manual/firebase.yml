@@ -1,0 +1,10 @@
+include:
+  - local: .gitlab/deploy/manual/manual_deploy_default.yml
+  - local: .gitlab/jobs/prepare/fetch_version_code.yml
+  - local: .gitlab/jobs/build/build_apk.yml
+  - local: .gitlab/jobs/publish/publish_firebase_android.yml
+  - local: .gitlab/jobs/build/build_ipa.yml
+  - local: .gitlab/jobs/publish/publish_firebase_ios.yml
+  - local: .gitlab/jobs/push/upload_symbols.yml
+  - local: .gitlab/jobs/push/push_meta.yml
+  - local: .gitlab/jobs/push/push_pubspec.yml

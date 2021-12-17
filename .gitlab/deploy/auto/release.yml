@@ -1,0 +1,10 @@
+include:
+  - local: .gitlab/deploy/deploy_default.yml
+  - local: .gitlab/jobs/prepare/fetch_version_code.yml
+  - local: .gitlab/jobs/build/build_appbundle.yml
+  - local: .gitlab/jobs/publish/publish_google_play.yml
+  - local: .gitlab/jobs/build/build_apk.yml
+  - local: .gitlab/jobs/publish/publish_huawei_appgallery.yml
+  - local: .gitlab/jobs/build/build_ipa.yml
+  - local: .gitlab/jobs/publish/publish_app_store.yml
+  - local: .gitlab/jobs/push/upload_symbols.yml

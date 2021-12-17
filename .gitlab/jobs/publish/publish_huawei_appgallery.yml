@@ -1,0 +1,11 @@
+publish_huawei_appgallery:
+  stage: publish
+  needs:
+    - job: fetch_version_code
+      artifacts: true
+    - job: build_apk
+      artifacts: true
+  script:
+    - cd android
+    - bundle install
+    - bundle exec fastlane publish_to_huawei_appgallery

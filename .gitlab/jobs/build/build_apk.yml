@@ -1,0 +1,11 @@
+build_apk:
+  stage: publish
+  dependencies:
+    - fetch_version_code
+  script:
+    - sh .gitlab/scripts/set_version.sh $VERSION
+    - flutter build apk lib/${BUILD_TYPE}.dart
+  artifacts:
+    paths:
+      - $ANDROID_APK_PATH
+    expire_in: 1 week

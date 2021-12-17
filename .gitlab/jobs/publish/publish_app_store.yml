@@ -1,0 +1,11 @@
+publish_app_store:
+  stage: publish
+  needs:
+    - job: fetch_version_code
+      artifacts: true
+    - job: build_ipa
+      artifacts: true
+  script:
+    - cd ios
+    - bundle install
+    - bundle exec fastlane publish_to_app_store

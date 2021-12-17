@@ -1,0 +1,15 @@
+build_ipa:
+  stage: publish
+  dependencies:
+    - fetch_version_code
+  script:
+    - sh .gitlab/scripts/set_version.sh $VERSION
+    - cd ios
+    - bundle install
+    - bundle exec fastlane build
+  artifacts:
+    paths:
+      - $IOS_IPA_PATH
+      - $IOS_UPLOAD_SYMBOLS_PATH
+      - $IOS_DSYM_PATH
+    expire_in: 1 week

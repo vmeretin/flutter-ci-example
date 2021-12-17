@@ -1,0 +1,10 @@
+push_pubspec:
+  stage: push
+  dependencies:
+    - fetch_version_code
+  script:
+    - .gitlab/scripts/checkout_ref.sh
+    - sh .gitlab/scripts/set_version.sh $VERSION
+    - git add pubspec.yaml
+    - git commit -m "[skip ci] Version bumped"
+    - git push $REPO_GIT_URL "$CI_COMMIT_REF_NAME":"$CI_COMMIT_REF_NAME"

@@ -1,0 +1,29 @@
+fetch_version_code:
+  stage: prepare
+  script:
+    - >
+      if [ "$BUILD_TYPE" == "test" ]; then
+        git clone --depth=1 $META_GIT_URL
+        VERSION_CODE=$(cat meta-mobile/version_code.txt)
+        VERSION_CODE=$((VERSION_CODE + 1))
+        sh .gitlab/scripts/set_version_code.sh $VERSION_CODE
+      elif [ "$BUILD_TYPE" == "beta" ] || [ "$BUILD_TYPE" == "release" ]; then
+        VERSION="${CI_COMMIT_TAG:1}"
+      
+        if [ "$BUILD_TYPE" == "beta" ]; then
+          VERSION=${VERSION%"-beta"}
+        fi
+      
+        sh .gitlab/scripts/set_version.sh "$VERSION"
+      fi
+    - VERSION=$(sh .gitlab/scripts/get_version.sh)
+    - echo "VERSION=$VERSION"
+    - echo "VERSION=$VERSION" >> build.env
+    - IFS='+' read -ra VERSION_ARRAY <<< "$VERSION"
+    - VERSION_CODE=${VERSION_ARRAY[1]}
+    - echo "VERSION_CODE=$VERSION_CODE"
+    - echo "VERSION_CODE=$VERSION_CODE" >> build.env
+  artifacts:
+    reports:
+      dotenv: build.env
+    expire_in: 1 week

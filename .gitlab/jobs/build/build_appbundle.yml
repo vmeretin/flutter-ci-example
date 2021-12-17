@@ -1,0 +1,11 @@
+build_appbundle:
+  stage: publish
+  dependencies:
+    - fetch_version_code
+  script:
+    - sh .gitlab/scripts/set_version.sh $VERSION
+    - flutter build appbundle lib/${BUILD_TYPE}.dart
+  artifacts:
+    paths:
+      - $ANDROID_AAB_PATH
+    expire_in: 1 week

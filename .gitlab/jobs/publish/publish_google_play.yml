@@ -1,0 +1,11 @@
+publish_google_play:
+  stage: publish
+  needs:
+    - job: fetch_version_code
+      artifacts: true
+    - job: build_appbundle
+      artifacts: true
+  script:
+    - cd android
+    - bundle install
+    - bundle exec fastlane publish_to_google_play

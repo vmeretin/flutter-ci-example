@@ -1,0 +1,8 @@
+stages:
+  - test
+  - deploy
+
+include:
+  - local: .gitlab/default.yml
+  - local: .gitlab/jobs/test.yml
+  - local: .gitlab/jobs/deploy.yml

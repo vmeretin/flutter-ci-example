@@ -1,0 +1,5 @@
+include:
+  - local: .gitlab/deploy/deploy_default.yml
+  - local: .gitlab/jobs/prepare/fetch_version_code.yml
+  - local: .gitlab/jobs/build/build_appbundle.yml
+  - local: .gitlab/jobs/publish/publish_google_play.yml

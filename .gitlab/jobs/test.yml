@@ -1,0 +1,46 @@
+.base_test:
+  stage: test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+flutter_analyze:
+  extends: .base_test
+  script:
+    - flutter pub get
+    - flutter analyze lib test
+    - metrics analyze --fatal-style --fatal-performance --fatal-warnings lib test
+
+flutter_test:
+  extends: .base_test
+  script:
+    - flutter test --machine | tojunit -o junit_report.xml
+  artifacts:
+    reports:
+      junit:
+        - junit_report.xml
+    expire_in: 1 week
+
+check_unused_files:
+  extends: .base_test
+  script:
+    - flutter pub get
+    - unused_files=$(metrics check-unused-files lib test)
+    - echo "$unused_files"
+    - >
+      if [ "$unused_files" != "No unused files found!" ]; then
+        exit 1
+      fi
+
+flutter_format:
+  extends: .base_test
+  script:
+    - .gitlab/scripts/checkout_ref.sh
+    - >
+      if flutter format -l 120 --set-exit-if-changed lib test; then
+        echo "Dart source code already formatted. Continue..."
+      else
+        echo "Dart source code formatted!"
+        git add .
+        git commit -m "[skip ci] Format Dart source code"
+        git push $REPO_GIT_URL "$CI_COMMIT_REF_NAME":"$CI_COMMIT_REF_NAME"
+      fi

@@ -1,0 +1,15 @@
+update_languages:
+  stage: prepare
+  allow_failure: true
+  script:
+    - .gitlab/scripts/checkout_ref.sh
+    - curl $LANGUAGES_JSON_URL -o assets/languages.all.min.json
+    - >
+      if git diff -s --exit-code; then
+        echo "languages.all.min.json file is up to date. Continue..."
+      else
+        git add assets/languages.all.min.json
+        git commit -m "[skip ci] languages.all.min.json updated"
+        git push $REPO_GIT_URL "$CI_COMMIT_REF_NAME":"$CI_COMMIT_REF_NAME"
+        echo "languages.all.min.json file updated and committed!"
+      fi

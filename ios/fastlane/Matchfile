@@ -1,0 +1,7 @@
+storage_mode("git")
+git_url(ENV["MATCH_GIT_URL"])
+shallow_clone(true)
+
+app_identifier([ENV["IOS_APP_IDENTIFIER"]])
+username(ENV["IOS_APPLE_ID"])
+generate_apple_certs(false)
